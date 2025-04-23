@@ -10,6 +10,7 @@ import java.util.List;
 public class Physiotherapist extends Member {
 
     private final List<String> skill = new ArrayList<>();
+    private final List<Treatment> treatments = new ArrayList<>();
 
     public Physiotherapist(String id, String fullName, String address, String phoneNumber) {
         super(id, fullName, address, phoneNumber);
@@ -21,7 +22,15 @@ public class Physiotherapist extends Member {
         }
     }
 
+    public void addTreatment(Treatment treatment) {
+        treatments.add(treatment);
+    }
+
     public List<String> getSkills() {
         return skill;
+    }
+
+    public List<Treatment> getTreatments() {
+        return treatments;
     }
 }
