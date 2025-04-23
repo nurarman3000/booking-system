@@ -2,6 +2,7 @@ package com.arman.booking.system;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -32,5 +33,11 @@ public class Physiotherapist extends Member {
 
     public List<Treatment> getTreatments() {
         return treatments;
+    }
+
+    public List<Appointment> getAllAppointments() {
+        return treatments.stream()
+                .flatMap(t -> t.getAppointments().stream())
+                .collect(Collectors.toList());
     }
 }
