@@ -21,6 +21,9 @@ public class BookingSystem {
                 case "1":
                     ClinicUtil.addPatient(clinic);
                     break;
+                case "2":
+                    ClinicUtil.searchByPhysiotherapist(clinic);
+                    break;
                 case "exit":
                     isRunning = false;
                     break;
@@ -37,7 +40,7 @@ public class BookingSystem {
     private static void showMenu() {
         System.out.println("\n--- Main Menu ---");
         System.out.println("1. Add a new patient");
-        System.out.println("Type 'exit' to quit");
+        System.out.println("2. Search by expertise");
         System.out.print("Choose an option: ");
     }
 }

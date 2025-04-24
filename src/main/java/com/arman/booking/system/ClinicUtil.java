@@ -43,6 +43,24 @@ public class ClinicUtil {
         });
     }
 
+    public static void searchByPhysiotherapist(Clinic clinic) {
+        System.out.print("\nEnter physiotherapist's name: ");
+        String name = scanner.nextLine();
+        Physiotherapist pt = clinic.searchByName(name);
+        
+        if (pt != null) {
+            System.out.println("\nPhysiotherapist: " + pt.getFullName());
+            pt.getTreatments().forEach(t -> {
+                System.out.println("  Treatment: " + t.getName());
+                t.getAppointments().forEach(appt -> {
+                    System.out.println("    Time: " + appt.getStartTime());
+                });
+            });
+        } else {
+            System.out.println("Physiotherapist not found.");
+        }
+    }
+
     public static void bookAppointment(Clinic clinic) {
         System.out.print("\nEnter Patient ID: ");
         String patientId = scanner.nextLine();
