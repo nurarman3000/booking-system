@@ -28,6 +28,21 @@ public class ClinicUtil {
         System.out.println("Patient " + name + " added successfully.");
     }
 
+    public static void searchByExpertise(Clinic clinic) {
+        System.out.print("\nEnter expertise area (e.g., Physiotherapy, Massage): ");
+        String expertise = scanner.nextLine();
+        System.out.println("Searching for physiotherapists with expertise in " + expertise + "...");
+        clinic.searchByExpertise(expertise).forEach(pt -> {
+            System.out.println("\nPhysiotherapist: " + pt.getFullName());
+            pt.getTreatments().forEach(t -> {
+                System.out.println("  Treatment: " + t.getName());
+                t.getAppointments().forEach(appt -> {
+                    System.out.println("    Time: " + appt.getStartTime());
+                });
+            });
+        });
+    }
+
     public static void bookAppointment(Clinic clinic) {
         System.out.print("\nEnter Patient ID: ");
         String patientId = scanner.nextLine();
@@ -180,5 +195,8 @@ public class ClinicUtil {
         }
     }
     
+    public static void listAllPatients(Clinic clinic) {
+        clinic.listPatients();
+    }
 }
 
