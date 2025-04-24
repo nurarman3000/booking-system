@@ -63,4 +63,27 @@ class Clinic {
     public void cancelAppointment(Appointment appointment) {
         appointment.cancel();
     }
+    
+    public void generateReport() {
+        System.out.println("--- BPC Clinic Report ---");
+        Map<Physiotherapist, Long> attendedCount = new HashMap<>();
+
+        for (Physiotherapist p : physiotherapists) {
+            List<Appointment> all = p.getAllAppointments();
+            System.out.println("\nPhysiotherapist: " + p.getFullName());
+            for (Appointment appt : all) {
+                System.out.println("Treatment: " + appt.getTreatment().getName() +
+                        ", Patient: " + (appt.getPatient() != null ? appt.getPatient().getFullName() : "None") +
+                        ", Time: " + appt.getStartTime() +
+                        ", Status: " + appt.getStatus());
+            }
+            long attended = all.stream().filter(a -> a.getStatus() == AppointmentStatus.ATTENDED).count();
+            attendedCount.put(p, attended);
+        }
+
+        System.out.println("\n--- Physiotherapists by Attended Appointments ---");
+        attendedCount.entrySet().stream()
+                .sorted(Map.Entry.<Physiotherapist, Long>comparingByValue().reversed())
+                .forEach(e -> System.out.println(e.getKey().getFullName() + ": " + e.getValue()));
+    }
 }

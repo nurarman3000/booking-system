@@ -195,6 +195,11 @@ public class ClinicUtil {
         }
     }
     
+
+    public static void generateReport(Clinic clinic) {
+        clinic.generateReport();
+    }
+    
     public static void listAllPatients(Clinic clinic) {
         clinic.listPatients();
     }
