@@ -35,11 +35,15 @@ public class BookingSystem {
                     break;
                 case "6": 
                     ClinicUtil.attendAppointment(clinic);
+                    break;
                 case "7":
                     ClinicUtil.generateReport(clinic);
                     break;
                 case "8":
                     ClinicUtil.listAllPatients(clinic);
+                    break;
+                case "9":
+                    ClinicUtil.removePatient(clinic);
                     break;
                 case "exit":
                     isRunning = false;
@@ -61,8 +65,10 @@ public class BookingSystem {
         System.out.println("3. Search by physiotherapist");
         System.out.println("4. Book an appointment");
         System.out.println("5. Cancel an appointment");
-        System.out.println("6. Generate report");
-        System.out.println("7. See Patient List");
+        System.out.println("6. Attend appointment");
+        System.out.println("7. Generate report");
+        System.out.println("8. See Patient List");
+        System.out.println("9. Remove Patient");
         System.out.println("Type 'exit' to quit");
         System.out.print("Choose an option: ");
     }

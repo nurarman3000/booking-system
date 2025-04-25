@@ -28,6 +28,31 @@ public class ClinicUtil {
         System.out.println("Patient " + name + " added successfully.");
     }
 
+    public static void removePatient(Clinic clinic) {
+        System.out.print("\nEnter Patient ID to remove: ");
+        String patientId = scanner.nextLine();
+    
+        Patient patient = clinic.getPatients().stream()
+                .filter(p -> p.getId().equals(patientId))
+                .findFirst()
+                .orElse(null);
+    
+        if (patient == null) {
+            System.out.println("Patient not found!");
+            return;
+        }
+    
+        clinic.getPhysiotherapists().stream()
+                .flatMap(pt -> pt.getTreatments().stream())
+                .flatMap(treatment -> treatment.getAppointments().stream())
+                .filter(appt -> appt.getPatient() != null && appt.getPatient().getId().equals(patientId))
+                .forEach(Appointment::cancel);
+    
+        // Remove patient from clinic
+        clinic.removePatient(patientId);
+        System.out.println("Patient removed and appointments cancelled.");
+    }
+
     public static void searchByExpertise(Clinic clinic) {
         System.out.print("\nEnter expertise area (e.g., Physiotherapy, Massage): ");
         String expertise = scanner.nextLine();
@@ -68,7 +93,7 @@ public class ClinicUtil {
                 .filter(p -> p.getId().equals(patientId))
                 .findFirst()
                 .orElse(null);
-        
+
         if (patient == null) {
             System.out.println("Patient not found!");
             return;
@@ -106,14 +131,16 @@ public class ClinicUtil {
                 .findFirst()
                 .orElse(null);
 
-        if (selectedAppt != null && selectedAppt.isAvailable()) {
+        if (selectedAppt == null) {
+            System.out.println("No appointment exists at that time.");
+        } else if (!selectedAppt.isAvailable()) {
+            System.out.println("That appointment has already been booked by another patient.");
+        } else {
             clinic.bookAppointment(patient, selectedAppt);
             System.out.println("Appointment booked successfully!");
-        } else {
-            System.out.println("Appointment is not available.");
         }
     }
-
+    
     public static void cancelAppointment(Clinic clinic) {
         System.out.print("\nEnter Patient ID to cancel appointment: ");
         String patientId = scanner.nextLine();
