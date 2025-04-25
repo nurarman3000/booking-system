@@ -13,8 +13,9 @@ public class Physiotherapist extends Member {
     private final List<String> skill = new ArrayList<>();
     private final List<Treatment> treatments = new ArrayList<>();
 
-    public Physiotherapist(String id, String fullName, String address, String phoneNumber) {
+    public Physiotherapist(String id, String fullName, String address, String phoneNumber, List<String> skills) {
         super(id, fullName, address, phoneNumber);
+        this.skill.addAll(skills);
     }
 
     public void addSkill(String area) {

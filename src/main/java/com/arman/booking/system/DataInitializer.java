@@ -1,6 +1,8 @@
 package com.arman.booking.system;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -10,39 +12,31 @@ class DataInitializer {
     public static Clinic initializeClinic() {
         Clinic clinic = new Clinic();
 
-        // Add physiotherapists and skills
-        Physiotherapist pt1 = new Physiotherapist("P001", "Dr. Kevin", "1 Street", "1234");
-        pt1.addSkill("Massage");
-        pt1.addSkill("Physiotherapy");
+        List<Physiotherapist> physiotherapists = Arrays.asList(
+                new Physiotherapist("P001", "Dr. Kevin", "1 Street", "1234", Arrays.asList("Massage", "Physiotherapy")),
+                new Physiotherapist("P002", "Dr. Sara", "2 Avenue", "2345", Arrays.asList("Osteopathy", "Massage")),
+                new Physiotherapist("P003", "Dr. John", "2 Lake road", "2355",
+                        Arrays.asList("Electrotherapy", "Massage")));
 
-        Physiotherapist pt2 = new Physiotherapist("P002", "Dr. Sara", "2 Avenue", "2345");
-        pt2.addSkill("Osteopathy");
-        pt2.addSkill("Massage");
+        List<Treatment> treatments = Arrays.asList(
+                new Treatment("Massage", "Massage", physiotherapists.get(0)), // Dr. Kevin
+                new Treatment("Massage", "Massage", physiotherapists.get(1)), // Dr. Sara
+                new Treatment("Electrotherapy", "Electrotherapy", physiotherapists.get(2)) // Dr. John
+        );
 
-        Physiotherapist pt3 = new Physiotherapist("P003", "Dr. John", "2 Lake road", "2355");
-        pt3.addSkill("Electrotherapy");
-        pt3.addSkill("Massage");
-        
-        // Create treatments and appointments
-        Treatment t1 = new Treatment("Massage", "Massage", pt1);
-        addAppointmentsForTreatment(t1);
-        pt1.addTreatment(t1);
-
-        Treatment t2 = new Treatment("Massage", "Massage", pt2);
-        addAppointmentsForTreatment(t2);
-        pt2.addTreatment(t2);
-
-        Treatment t3 = new Treatment("Electrotherapy", "Electrotherapy", pt3);
-        addAppointmentsForTreatment(t3);
-        pt3.addTreatment(t3);
+        for (int i = 0; i < treatments.size(); i++) {
+            Treatment treatment = treatments.get(i);
+            addAppointmentsForTreatment(treatment);
+            physiotherapists.get(i).addTreatment(treatment);
+        }
 
         // Registering physio to Clinic
-        clinic.addPhysiotherapist(pt1);
-        clinic.addPhysiotherapist(pt2);
-        clinic.addPhysiotherapist(pt3);
+        for (int i = 0; i < physiotherapists.size(); i++) {
+            clinic.addPhysiotherapist(physiotherapists.get(i));
+        }
 
         // Add patients
-        for (int i = 1; i <= 10; i++) {
+        for (int i = 1; i <= 15; i++) {
             Patient patient = new Patient("PT00" + i, "Patient " + i, i + " Demo Road", "555-000" + i);
             clinic.addPatient(patient);
         }
@@ -51,10 +45,20 @@ class DataInitializer {
     }
 
     private static void addAppointmentsForTreatment(Treatment t) {
-        for (int i = 0; i < 4; i++) {
-            LocalDateTime start = LocalDateTime.of(2025, 5, (i+1) + i * 7, 10 + i, 0);
-            Appointment appt = new Appointment(start, start.plusHours(1), t);
-            t.addAppointment(appt);
+        // Start from today's date, at 10:00 AM
+        LocalDateTime startDate = LocalDateTime.now().withHour(10).withMinute(0).withSecond(0).withNano(0);
+
+        for (int i = 0; i < 4; i++) { // 4 weeks of appointments (30 days will cover 4 weeks roughly)
+            // Set the appointment time for each week (adding 7 days per week)
+            LocalDateTime appointmentDate = startDate.plusDays(i * 7); // Shift by a week for each iteration
+
+            // Create 5 appointments per day (one per hour)
+            for (int j = 0; j < 5; j++) { // 5 appointments per day
+                // Each appointment time will be one hour after
+                LocalDateTime appointmentSlot = appointmentDate.plusHours(j);
+                Appointment appt = new Appointment(appointmentSlot, appointmentSlot.plusHours(1), t);
+                t.addAppointment(appt);
+            }
         }
     }
 }
