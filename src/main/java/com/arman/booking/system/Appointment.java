@@ -17,7 +17,7 @@ public class Appointment {
         this.startTime = startTime;
         this.endTime = endTime;
         this.treatment = treatment;
-        this.status = AppointmentStatus.BOOKED; // Temporary until booked
+        this.status = AppointmentStatus.AVAILABLE;
     }
 
     public void book(Patient patient) {
@@ -26,7 +26,17 @@ public class Appointment {
     }
 
     public void cancel() {
-        this.status = AppointmentStatus.CANCELLED;
+        if (this.status == AppointmentStatus.ATTENDED) {
+            System.out.println("Cannot cancel an attended appointment.");
+            return; 
+        }
+
+        this.patient = null;
+        if (this.startTime.isAfter(LocalDateTime.now())) {
+            this.status = AppointmentStatus.AVAILABLE;
+        } else {
+            this.status = AppointmentStatus.CANCELLED;
+        }
     }
 
     public void attend() {
@@ -34,7 +44,9 @@ public class Appointment {
     }
 
     public boolean isAvailable() {
-        return this.patient == null && this.status != AppointmentStatus.CANCELLED;
+        return this.patient == null
+            && this.status == AppointmentStatus.AVAILABLE
+            && this.startTime.isAfter(LocalDateTime.now());
     }
 
     public LocalDateTime getStartTime() { return startTime; }
