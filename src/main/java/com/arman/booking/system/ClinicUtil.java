@@ -199,4 +199,27 @@ public class ClinicUtil {
     public static void listAllPatients(Clinic clinic) {
         clinic.listPatients();
     }
+
+    public static void viewAllBookedAppointments(Clinic clinic) {
+        System.out.println("\nListing all booked appointments:");
+
+        List<Appointment> bookedAppointments = clinic.getPhysiotherapists().stream()
+                .flatMap(pt -> pt.getAllAppointments().stream())
+                .filter(appt -> appt.getStatus() == AppointmentStatus.BOOKED)
+                .collect(Collectors.toList());
+
+        if (bookedAppointments.isEmpty()) {
+            System.out.println("No booked appointments found.");
+            return;
+        }
+
+        int counter = 1;
+        for (Appointment appt : bookedAppointments) {
+            System.out.println(counter + ". Appointment ID: " + appt.getAppointmentId() +
+                    " | Patient: " + (appt.getPatient() != null ? appt.getPatient().getFullName() : "N/A") +
+                    " | Physio: " + (appt.getPhysiotherapist() != null ? appt.getPhysiotherapist().getFullName() : "N/A") +
+                    " | Time: " + appt.getStartTime());
+            counter++;
+        }
+    }
 }

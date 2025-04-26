@@ -33,7 +33,7 @@ public class BookingSystem {
                 case "5":
                     ClinicUtil.cancelAppointment(clinic);
                     break;
-                case "6": 
+                case "6":
                     ClinicUtil.attendAppointment(clinic);
                     break;
                 case "7":
@@ -44,6 +44,9 @@ public class BookingSystem {
                     break;
                 case "9":
                     ClinicUtil.removePatient(clinic);
+                    break;
+                case "10":
+                    ClinicUtil.viewAllBookedAppointments(clinic);
                     break;
                 case "exit":
                     isRunning = false;
@@ -69,6 +72,7 @@ public class BookingSystem {
         System.out.println("7. Generate report");
         System.out.println("8. See Patient List");
         System.out.println("9. Remove Patient");
+        System.out.println("10. List booked appointments");
         System.out.println("Type 'exit' to quit");
         System.out.print("Choose an option: ");
     }
