@@ -54,21 +54,20 @@ class Clinic {
                 .findFirst().orElse(null);
     }
 
-    public void bookAppointment(Patient patient, Appointment appointment, Physiotherapist physiotherapist) {
+    public void bookAppointment(Patient patient, Appointment appointment) {
         if (appointment.isAvailable()) {
-            appointment.book(patient, physiotherapist);
-            System.out.println("Appointment booked successfully!");
+            appointment.book(patient, appointment.getPhysiotherapist());
+            System.out.println("Appointment booked successfully! Appointment ID: " + appointment.getAppointmentId());
         }
     }
 
     public void cancelAppointment(Appointment appointment) {
         appointment.cancel();
-        System.out.println("Appointment cancelled.");
+        System.out.println("Appointment with ID " + appointment.getAppointmentId() + " cancelled successfully!");
     }
 
     public void attendAppointment(Appointment appointment) {
         appointment.attend();
-        System.out.println("Appointment attended.");
     }
 
     public void generateReport() {
@@ -81,7 +80,7 @@ class Clinic {
 
             for (Appointment appt : all) {
                 List<Treatment> treatmentsForAppointment = p.getTreatments().stream()
-                        .filter(t -> p.getAllAppointments().contains(appt))
+                        .filter(_ -> p.getAllAppointments().contains(appt))
                         .collect(Collectors.toList());
 
                 if (!treatmentsForAppointment.isEmpty()) {

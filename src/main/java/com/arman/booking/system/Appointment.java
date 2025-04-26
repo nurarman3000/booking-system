@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
  * @author NurArman
  */
 public class Appointment {
+    private static int appointmentCounter = 1;  // To generate unique appointment IDs
+    private final String appointmentId;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private AppointmentStatus status;
@@ -14,9 +16,14 @@ public class Appointment {
     private Physiotherapist physiotherapist;
 
     public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
+        this.appointmentId = "APPT" + appointmentCounter++;  // Generate a unique ID
         this.startTime = startTime;
         this.endTime = endTime;
-        this.status = AppointmentStatus.AVAILABLE; // Initial status is AVAILABLE
+        this.status = AppointmentStatus.AVAILABLE; // Default status is AVAILABLE
+    }
+
+    public String getAppointmentId() {
+        return appointmentId;
     }
 
     public LocalDateTime getStartTime() {
@@ -52,10 +59,11 @@ public class Appointment {
     }
 
     public Physiotherapist getPhysiotherapist() {
-        if (physiotherapist == null) {
-            System.out.println("physiotherapist is not set yet");
-        }
         return physiotherapist;
+    }
+
+    public void setPhysiotherapist(Physiotherapist physiotherapist) {
+        this.physiotherapist = physiotherapist;
     }
 
     public void book(Patient patient, Physiotherapist physiotherapist) {

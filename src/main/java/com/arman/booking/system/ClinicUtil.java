@@ -1,7 +1,5 @@
-
 package com.arman.booking.system;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -152,93 +150,43 @@ public class ClinicUtil {
             return;
         }
 
-        clinic.bookAppointment(patient, selectedAppt, selectedAppt.getPhysiotherapist());
+        // Book the appointment using the appointmentId
+        clinic.bookAppointment(patient, selectedAppt);
     }
 
     public static void cancelAppointment(Clinic clinic) {
-        System.out.print("\nEnter Patient ID to cancel appointment: ");
-        String patientId = scanner.nextLine();
-        Patient patient = clinic.getPatients().stream()
-                .filter(p -> p.getId().equals(patientId))
+        System.out.print("\nEnter Appointment ID to cancel: ");
+        String appointmentId = scanner.nextLine();
+
+        // Find the appointment using the appointmentId
+        Appointment appointmentToCancel = clinic.getPhysiotherapists().stream()
+                .flatMap(pt -> pt.getAllAppointments().stream())
+                .filter(appt -> appt.getAppointmentId().equals(appointmentId))
                 .findFirst()
                 .orElse(null);
 
-        if (patient == null) {
-            System.out.println("Patient not found!");
+        if (appointmentToCancel == null) {
+            System.out.println("Appointment not found!");
             return;
         }
 
-        System.out.print("Enter Treatment name to cancel: ");
-        String treatmentName = scanner.nextLine();
-        Physiotherapist pt = clinic.getPhysiotherapists().stream()
-                .filter(p -> p.getTreatments().stream()
-                        .anyMatch(t -> t.getName().equalsIgnoreCase(treatmentName)))
-                .findFirst()
-                .orElse(null);
-
-        if (pt == null) {
-            System.out.println("Treatment not found!");
-            return;
-        }
-
-        System.out.print("Enter the time slot to cancel (yyyy-MM-ddTHH:mm): ");
-        String dateTime = scanner.nextLine();
-        LocalDateTime appointmentTime = LocalDateTime.parse(dateTime);
-
-        Appointment selectedAppt = pt.getAllAppointments().stream()
-                .filter(appt -> appt.getStartTime().equals(appointmentTime))
-                .findFirst()
-                .orElse(null);
-
-        if (selectedAppt != null && selectedAppt.getPatient() != null) {
-            clinic.cancelAppointment(selectedAppt);
-            System.out.println("Appointment cancelled successfully!");
-        } else {
-            System.out.println("No such booked appointment found.");
-        }
+        clinic.cancelAppointment(appointmentToCancel);
     }
 
     public static void attendAppointment(Clinic clinic) {
-        System.out.print("\nEnter Patient ID to mark attendance: ");
-        String patientId = scanner.nextLine();
-        Patient patient = clinic.getPatients().stream()
-                .filter(p -> p.getId().equals(patientId))
+        System.out.print("\nEnter Appointment ID to mark attendance: ");
+        String appointmentId = scanner.nextLine();
+
+        // Find the appointment using the appointmentId
+        Appointment selectedAppt = clinic.getPhysiotherapists().stream()
+                .flatMap(pt -> pt.getAllAppointments().stream())
+                .filter(appt -> appt.getAppointmentId().equals(appointmentId))
                 .findFirst()
                 .orElse(null);
 
-        if (patient == null) {
-            System.out.println("Patient not found!");
-            return;
-        }
-
-        System.out.print("Enter Treatment name: ");
-        String treatmentName = scanner.nextLine();
-        Physiotherapist pt = clinic.getPhysiotherapists().stream()
-                .filter(p -> p.getTreatments().stream()
-                        .anyMatch(t -> t.getName().equalsIgnoreCase(treatmentName)))
-                .findFirst()
-                .orElse(null);
-
-        if (pt == null) {
-            System.out.println("Treatment not found!");
-            return;
-        }
-
-        System.out.print("Enter appointment time to mark attended (yyyy-MM-ddTHH:mm): ");
-        String dateTime = scanner.nextLine();
-        LocalDateTime appointmentTime = LocalDateTime.parse(dateTime);
-
-        Appointment selectedAppt = pt.getAllAppointments().stream()
-                .filter(appt -> appt.getStartTime().equals(appointmentTime))
-                .findFirst()
-                .orElse(null);
-
-        if (selectedAppt != null && selectedAppt.getPatient() != null
-                && selectedAppt.getPatient().getId().equals(patientId)
-                && selectedAppt.getStatus() == AppointmentStatus.BOOKED) {
-
+        if (selectedAppt != null && selectedAppt.getStatus() == AppointmentStatus.BOOKED) {
             selectedAppt.attend();
-            System.out.println("Attendance marked successfully!");
+            System.out.println("Attendance marked successfully for Appointment ID: " + appointmentId);
         } else {
             System.out.println("No such booked appointment found to mark attended.");
         }

@@ -48,6 +48,7 @@ public class Physiotherapist extends Member {
     }
 
     public void addAppointment(Appointment appointment) {
+        appointment.setPhysiotherapist(this);
         appointments.add(appointment);
     }
 }

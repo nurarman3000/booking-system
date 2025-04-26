@@ -1,7 +1,6 @@
 package com.arman.booking.system;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,8 +18,7 @@ class DataInitializer {
         List<Physiotherapist> physiotherapists = Arrays.asList(
                 new Physiotherapist("P001", "Dr. Kevin", "1 Street", "1234", Arrays.asList("Massage", "Physiotherapy")),
                 new Physiotherapist("P002", "Dr. Sara", "2 Avenue", "2345", Arrays.asList("Osteopathy", "Massage")),
-                new Physiotherapist("P003", "Dr. John", "2 Lake road", "2355",
-                        Arrays.asList("Electrotherapy", "Acupuncture")));
+                new Physiotherapist("P003", "Dr. John", "2 Lake road", "2355", Arrays.asList("Electrotherapy", "Acupuncture")));
 
         for (Physiotherapist pt : physiotherapists) {
             addAppointmentsForPhysiotherapist(pt);
@@ -62,5 +60,4 @@ class DataInitializer {
             }
         }
     }
-
 }
