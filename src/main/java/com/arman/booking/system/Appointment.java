@@ -9,34 +9,66 @@ import java.time.LocalDateTime;
 public class Appointment {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Treatment treatment;
-    private Patient patient;
     private AppointmentStatus status;
+    private Patient patient;
+    private Physiotherapist physiotherapist;
 
-    public Appointment(LocalDateTime startTime, LocalDateTime endTime, Treatment treatment) {
+    public Appointment(LocalDateTime startTime, LocalDateTime endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
-        this.treatment = treatment;
-        this.status = AppointmentStatus.AVAILABLE;
+        this.status = AppointmentStatus.AVAILABLE; // Initial status is AVAILABLE
     }
 
-    public void book(Patient patient) {
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public AppointmentStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AppointmentStatus status) {
+        this.status = status;
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+    public Physiotherapist getPhysiotherapist() {
+        if (physiotherapist == null) {
+            System.out.println("physiotherapist is not set yet");
+        }
+        return physiotherapist;
+    }
+
+    public void book(Patient patient, Physiotherapist physiotherapist) {
+        this.patient = patient;
+        this.physiotherapist = physiotherapist;
         this.status = AppointmentStatus.BOOKED;
     }
 
     public void cancel() {
-        if (this.status == AppointmentStatus.ATTENDED) {
-            System.out.println("Cannot cancel an attended appointment.");
-            return; 
-        }
-
+        if (this.status == AppointmentStatus.ATTENDED)
+            return;
+        this.status = AppointmentStatus.AVAILABLE;
         this.patient = null;
-        if (this.startTime.isAfter(LocalDateTime.now())) {
-            this.status = AppointmentStatus.AVAILABLE;
-        } else {
-            this.status = AppointmentStatus.CANCELLED;
-        }
     }
 
     public void attend() {
@@ -44,14 +76,6 @@ public class Appointment {
     }
 
     public boolean isAvailable() {
-        return this.patient == null
-            && this.status == AppointmentStatus.AVAILABLE
-            && this.startTime.isAfter(LocalDateTime.now());
+        return status == AppointmentStatus.AVAILABLE && startTime.isAfter(LocalDateTime.now());
     }
-
-    public LocalDateTime getStartTime() { return startTime; }
-    public LocalDateTime getEndTime() { return endTime; }
-    public Treatment getTreatment() { return treatment; }
-    public Patient getPatient() { return patient; }
-    public AppointmentStatus getStatus() { return status; }
 }

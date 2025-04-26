@@ -21,9 +21,9 @@ class Clinic {
     public void addPatient(Patient patient) {
         patients.add(patient);
     }
-    
+
     public void listPatients() {
-        patients.stream().forEach(p -> System.out.println("Patient Name: " + p.fullName + " ID: " + p.id ));
+        patients.stream().forEach(p -> System.out.println("Patient Name: " + p.fullName + " ID: " + p.id));
     }
 
     public void removePatient(String patientId) {
@@ -54,16 +54,23 @@ class Clinic {
                 .findFirst().orElse(null);
     }
 
-    public void bookAppointment(Patient patient, Appointment appointment) {
+    public void bookAppointment(Patient patient, Appointment appointment, Physiotherapist physiotherapist) {
         if (appointment.isAvailable()) {
-            appointment.book(patient);
+            appointment.book(patient, physiotherapist);
+            System.out.println("Appointment booked successfully!");
         }
     }
 
     public void cancelAppointment(Appointment appointment) {
         appointment.cancel();
+        System.out.println("Appointment cancelled.");
     }
-    
+
+    public void attendAppointment(Appointment appointment) {
+        appointment.attend();
+        System.out.println("Appointment attended.");
+    }
+
     public void generateReport() {
         System.out.println("--- BPC Clinic Report ---");
         Map<Physiotherapist, Long> attendedCount = new HashMap<>();
@@ -71,12 +78,24 @@ class Clinic {
         for (Physiotherapist p : physiotherapists) {
             List<Appointment> all = p.getAllAppointments();
             System.out.println("\nPhysiotherapist: " + p.getFullName());
+
             for (Appointment appt : all) {
-                System.out.println("Treatment: " + appt.getTreatment().getName() +
-                        ", Patient: " + (appt.getPatient() != null ? appt.getPatient().getFullName() : "None") +
-                        ", Time: " + appt.getStartTime() +
-                        ", Status: " + appt.getStatus());
+                List<Treatment> treatmentsForAppointment = p.getTreatments().stream()
+                        .filter(t -> p.getAllAppointments().contains(appt))
+                        .collect(Collectors.toList());
+
+                if (!treatmentsForAppointment.isEmpty()) {
+                    for (Treatment treatment : treatmentsForAppointment) {
+                        System.out.println("Treatment: " + treatment.getName() +
+                                ", Patient: " + (appt.getPatient() != null ? appt.getPatient().getFullName() : "None") +
+                                ", Time: " + appt.getStartTime() +
+                                ", Status: " + appt.getStatus());
+                    }
+                } else {
+                    System.out.println("No treatment found for this appointment.");
+                }
             }
+
             long attended = all.stream().filter(a -> a.getStatus() == AppointmentStatus.ATTENDED).count();
             attendedCount.put(p, attended);
         }
@@ -86,4 +105,5 @@ class Clinic {
                 .sorted(Map.Entry.<Physiotherapist, Long>comparingByValue().reversed())
                 .forEach(e -> System.out.println(e.getKey().getFullName() + ": " + e.getValue()));
     }
+
 }

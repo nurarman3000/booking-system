@@ -12,6 +12,7 @@ public class Physiotherapist extends Member {
 
     private final List<String> skill = new ArrayList<>();
     private final List<Treatment> treatments = new ArrayList<>();
+    private final List<Appointment> appointments = new ArrayList<>();
 
     public Physiotherapist(String id, String fullName, String address, String phoneNumber, List<String> skills) {
         super(id, fullName, address, phoneNumber);
@@ -37,8 +38,16 @@ public class Physiotherapist extends Member {
     }
 
     public List<Appointment> getAllAppointments() {
-        return treatments.stream()
-                .flatMap(t -> t.getAppointments().stream())
+        return appointments;
+    }
+
+    public List<Appointment> getAvailableAppointments() {
+        return appointments.stream()
+                .filter(Appointment::isAvailable)
                 .collect(Collectors.toList());
+    }
+
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
     }
 }

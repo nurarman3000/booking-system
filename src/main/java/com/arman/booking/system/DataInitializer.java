@@ -1,6 +1,7 @@
 package com.arman.booking.system;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,27 +13,25 @@ class DataInitializer {
     public static Clinic initializeClinic() {
         Clinic clinic = new Clinic();
 
+        List<String> uniqueTreatmentNames = Arrays.asList(
+                "Massage", "Physiotherapy", "Osteopathy", "Electrotherapy", "Acupuncture");
+
         List<Physiotherapist> physiotherapists = Arrays.asList(
                 new Physiotherapist("P001", "Dr. Kevin", "1 Street", "1234", Arrays.asList("Massage", "Physiotherapy")),
                 new Physiotherapist("P002", "Dr. Sara", "2 Avenue", "2345", Arrays.asList("Osteopathy", "Massage")),
                 new Physiotherapist("P003", "Dr. John", "2 Lake road", "2355",
-                        Arrays.asList("Electrotherapy", "Massage")));
+                        Arrays.asList("Electrotherapy", "Acupuncture")));
 
-        List<Treatment> treatments = Arrays.asList(
-                new Treatment("Massage", "Massage", physiotherapists.get(0)), // Dr. Kevin
-                new Treatment("Massage", "Massage", physiotherapists.get(1)), // Dr. Sara
-                new Treatment("Electrotherapy", "Electrotherapy", physiotherapists.get(2)) // Dr. John
-        );
+        for (Physiotherapist pt : physiotherapists) {
+            addAppointmentsForPhysiotherapist(pt);
 
-        for (int i = 0; i < treatments.size(); i++) {
-            Treatment treatment = treatments.get(i);
-            addAppointmentsForTreatment(treatment);
-            physiotherapists.get(i).addTreatment(treatment);
-        }
-
-        // Registering physio to Clinic
-        for (int i = 0; i < physiotherapists.size(); i++) {
-            clinic.addPhysiotherapist(physiotherapists.get(i));
+            for (String skill : pt.getSkills()) {
+                if (uniqueTreatmentNames.contains(skill)) {
+                    Treatment treatment = new Treatment(skill, skill, pt);
+                    pt.addTreatment(treatment);
+                }
+            }
+            clinic.addPhysiotherapist(pt);
         }
 
         // Add patients
@@ -44,7 +43,7 @@ class DataInitializer {
         return clinic;
     }
 
-    private static void addAppointmentsForTreatment(Treatment t) {
+    private static void addAppointmentsForPhysiotherapist(Physiotherapist physiotherapist) {
         // Start from today's date, at 10:00 AM
         LocalDateTime startDate = LocalDateTime.now().withHour(10).withMinute(0).withSecond(0).withNano(0);
 
@@ -53,12 +52,15 @@ class DataInitializer {
             LocalDateTime appointmentDate = startDate.plusDays(i * 7); // Shift by a week for each iteration
 
             // Create 5 appointments per day (one per hour)
-            for (int j = 0; j < 5; j++) { // 5 appointments per day
+            for (int j = 0; j < 3; j++) { // 3 appointments per day
                 // Each appointment time will be one hour after
                 LocalDateTime appointmentSlot = appointmentDate.plusHours(j);
-                Appointment appt = new Appointment(appointmentSlot, appointmentSlot.plusHours(1), t);
-                t.addAppointment(appt);
+                Appointment appt = new Appointment(appointmentSlot, appointmentSlot.plusHours(1));
+
+                // Add the appointment directly to the physiotherapist
+                physiotherapist.addAppointment(appt);
             }
         }
     }
+
 }
